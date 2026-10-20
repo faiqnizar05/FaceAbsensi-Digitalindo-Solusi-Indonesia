@@ -12,13 +12,22 @@ class UserData extends Model
     protected $table = 'data_user';
 
     protected $fillable = [
+        'register',
+        'departement',
+        'nama',
+        'no_telepon',
+        'tanggal_mulai',
         'username',
-        'kelas',  // FIELD BARU!
+        'kelas',
         'image'
     ];
 
     public function absens()
     {
-        return $this->hasMany(UserAbsen::class, 'username', 'username');
+        return $this->hasMany(
+            UserAbsen::class,
+            'register',
+            'register'
+        );
     }
 }

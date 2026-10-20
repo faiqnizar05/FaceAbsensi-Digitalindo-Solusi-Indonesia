@@ -13,10 +13,19 @@ return new class extends Migration
     {
         Schema::create('data_absen', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
+
+            // No Register peserta
+            $table->string('register');
+
+            // Lokasi saat melakukan absensi
             $table->text('location');
+
+            // Status absensi
             $table->enum('status', ['success', 'failed']);
+
+            // Waktu absensi
             $table->timestamp('time_absen');
+
             $table->timestamps();
         });
     }
@@ -28,4 +37,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('data_absen');
     }
-};
+}; 

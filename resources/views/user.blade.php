@@ -82,6 +82,7 @@
             opacity: 0;
             transform: translateY(-10px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -126,6 +127,10 @@
         margin: 0;
     }
 
+    /* ==============================
+       TOMBOL TAMBAH
+    ============================== */
+
     .btn-add {
         display: inline-flex;
         align-items: center;
@@ -143,6 +148,31 @@
     .btn-add:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        color: white;
+    }
+
+    /* ==============================
+       TOMBOL EXPORT EXCEL
+    ============================== */
+
+    .btn-excel {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.7rem 1.5rem;
+        background: linear-gradient(135deg, #16A34A, #15803D);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+    .btn-excel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+        color: white;
     }
 
     .table-container {
@@ -253,7 +283,12 @@
         margin-bottom: 1.5rem;
     }
 
+    /* ==============================
+       RESPONSIVE
+    ============================== */
+
     @media (max-width: 768px) {
+
         .page-header {
             flex-direction: column;
             align-items: flex-start;
@@ -273,7 +308,13 @@
             align-items: flex-start;
         }
 
-        .btn-add {
+        .button-group {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .btn-add,
+        .btn-excel {
             width: 100%;
             justify-content: center;
         }
@@ -282,7 +323,8 @@
             font-size: 0.9rem;
         }
 
-        th, td {
+        th,
+        td {
             padding: 0.7rem 0.5rem;
         }
 
@@ -294,102 +336,432 @@
 </style>
 @endsection
 
+
 @section('content')
+
 <div class="page-container">
+
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
     <div class="page-header">
+
         <div class="page-title">
-            <h1><i class="fas fa-users"></i> Data Anggota</h1>
-            <p>Kelola data anggota terdaftar di sistem</p>
+
+            <h1>
+                <i class="fas fa-users"></i>
+                Data Anggota
+            </h1>
+
+            <p>
+                Kelola data anggota terdaftar di sistem
+            </p>
+
         </div>
+
+
+        <!-- JUMLAH ANGGOTA -->
+
         <div class="stats-card">
-            <span class="stats-number">{{ $users->count() }}</span>
-            <span class="stats-label">
-                <i class="fas fa-user-check"></i>
-                Anggota Terdaftar
+
+            <span class="stats-number">
+                {{ $users->count() }}
             </span>
+
+            <span class="stats-label">
+
+                <i class="fas fa-user-check"></i>
+
+                Anggota Terdaftar
+
+            </span>
+
         </div>
+
     </div>
+
+
+    <!-- ==========================================
+         ALERT SUCCESS
+    =========================================== -->
 
     @if(session('success'))
-    <div class="alert alert-success">
-        <i class="fas fa-check-circle"></i>
-        <span>{{ session('success') }}</span>
-    </div>
+
+        <div class="alert alert-success">
+
+            <i class="fas fa-check-circle"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
+
+        </div>
+
     @endif
+
+
+    <!-- ==========================================
+         ALERT ERROR
+    =========================================== -->
 
     @if(session('error'))
-    <div class="alert alert-error">
-        <i class="fas fa-exclamation-circle"></i>
-        <span>{{ session('error') }}</span>
-    </div>
+
+        <div class="alert alert-error">
+
+            <i class="fas fa-exclamation-circle"></i>
+
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
     @endif
 
+
+    <!-- ==========================================
+         DATA ANGGOTA
+    =========================================== -->
+
     <div class="section">
+
         <div class="section-header">
-            <h2><i class="fas fa-list"></i> Daftar Anggota</h2>
-            <a href="{{ route('user.add') }}" class="btn-add">
-                <i class="fas fa-plus"></i>
-                Tambah Anggota
-            </a>
+
+            <h2>
+                <i class="fas fa-list"></i>
+                Daftar Anggota
+            </h2>
+
+
+            <!-- BUTTON GROUP -->
+
+            <div
+                class="button-group"
+                style="
+                    display: flex;
+                    gap: 0.8rem;
+                    flex-wrap: wrap;
+                "
+            >
+
+                <!-- ==================================
+                     TAMBAH ANGGOTA
+                =================================== -->
+
+                <a
+                    href="{{ route('user.add') }}"
+                    class="btn-add"
+                >
+
+                    <i class="fas fa-plus"></i>
+
+                    Tambah Anggota
+
+                </a>
+
+
+                <!-- ==================================
+                     DOWNLOAD EXCEL
+                =================================== -->
+
+                <a
+                    href="{{ route('user.export.excel') }}"
+                    class="btn-excel"
+                >
+
+                    <i class="fas fa-file-excel"></i>
+
+                    Download Excel
+
+                </a>
+
+            </div>
+
         </div>
+
+
+        <!-- ==========================================
+             TABLE
+        =========================================== -->
 
         <div class="table-container">
+
             @if($users->count() > 0)
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 60px;">No</th>
-                        <th>Anggota</th>
-                        <th>Username</th>
-                        <th>Tanggal Daftar</th>
-                        <th style="width: 150px; text-align: center;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($users as $index => $user)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>
-                            <div class="user-info">
-                                <img src="{{ asset($user->image) }}" alt="{{ $user->username }}" class="user-image">
-                                <div class="user-details">
-                                    <span class="user-name">{{ $user->username }}</span>
-                                    <span class="user-id">ID: #{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ $user->username }}</td>
-                        <td>{{ $user->created_at->format('d M Y, H:i') }} WIB</td>
-                        <td style="text-align: center;">
-                            <form action="{{ route('user.destroy', $user->id) }}" method="POST" onsubmit="return confirmDelete('{{ $user->username }}');" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-danger">
-                                    <i class="fas fa-trash"></i> Hapus
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width: 60px;">
+                                No
+                            </th>
+
+                            <th>
+                                No Register
+                            </th>
+
+                            <th>
+                                Departement
+                            </th>
+
+                            <th>
+                                Nama
+                            </th>
+
+                            <th>
+                                No Telepon
+                            </th>
+
+                            <th>
+                                Tanggal Mulai
+                            </th>
+
+                            <th>
+                                Foto
+                            </th>
+
+                            <th
+                                style="
+                                    width: 150px;
+                                    text-align: center;
+                                "
+                            >
+                                Aksi
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach($users as $index => $user)
+
+                            <tr>
+
+                                <!-- NO -->
+
+                                <td>
+                                    {{ $index + 1 }}
+                                </td>
+
+
+                                <!-- NO REGISTER -->
+
+                                <td>
+                                    {{ $user->register ?? '-' }}
+                                </td>
+
+
+                                <!-- DEPARTEMENT -->
+
+                                <td>
+                                    {{ $user->departement ?? '-' }}
+                                </td>
+
+
+                                <!-- NAMA -->
+
+                                <td>
+
+                                    <div class="user-info">
+
+                                        @if($user->image)
+
+                                            <img
+                                                src="{{ asset($user->image) }}"
+                                                alt="{{ $user->nama }}"
+                                                class="user-image"
+                                            >
+
+                                        @endif
+
+
+                                        <div class="user-details">
+
+                                            <span class="user-name">
+                                                {{ $user->nama ?? '-' }}
+                                            </span>
+
+
+                                            <span class="user-id">
+
+                                                ID:
+
+                                                #{{ str_pad(
+                                                    $user->id,
+                                                    4,
+                                                    '0',
+                                                    STR_PAD_LEFT
+                                                ) }}
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- NO TELEPON -->
+
+                                <td>
+                                    {{ $user->no_telepon ?? '-' }}
+                                </td>
+
+
+                                <!-- TANGGAL MULAI -->
+
+                                <td>
+
+                                    @if($user->tanggal_mulai)
+
+                                        {{ \Carbon\Carbon::parse(
+                                            $user->tanggal_mulai
+                                        )->format('d-m-Y') }}
+
+                                    @else
+
+                                        -
+
+                                    @endif
+
+                                </td>
+
+
+                                <!-- FOTO -->
+
+                                <td>
+
+                                    @if($user->image)
+
+                                        <img
+                                            src="{{ asset($user->image) }}"
+                                            alt="Foto {{ $user->nama }}"
+                                            style="
+                                                width: 50px;
+                                                height: 50px;
+                                                object-fit: cover;
+                                                border-radius: 8px;
+                                                border: 2px solid #3B82F6;
+                                            "
+                                        >
+
+                                    @else
+
+                                        <span>
+                                            -
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                <!-- AKSI -->
+
+                                <td style="text-align: center;">
+
+                                    <form
+                                        action="{{ route(
+                                            'user.destroy',
+                                            $user->id
+                                        ) }}"
+                                        method="POST"
+                                        onsubmit="return confirmDelete(
+                                            '{{ $user->nama }}'
+                                        );"
+                                        style="display: inline;"
+                                    >
+
+                                        @csrf
+
+                                        @method('DELETE')
+
+
+                                        <button
+                                            type="submit"
+                                            class="btn-danger"
+                                        >
+
+                                            <i class="fas fa-trash"></i>
+
+                                            Hapus
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+
             @else
-            <div class="empty-state">
-                <i class="fas fa-user-slash"></i>
-                <h3>Belum Ada Anggota Terdaftar</h3>
-                <p>Silakan tambah anggota baru untuk memulai</p>
-                <a href="{{ route('user.add') }}" class="btn-add">
-                    Tambah Anggota Pertama
-                </a>
-            </div>
+
+                <!-- ======================================
+                     EMPTY STATE
+                ======================================= -->
+
+                <div class="empty-state">
+
+                    <i class="fas fa-user-slash"></i>
+
+                    <h3>
+                        Belum Ada Anggota Terdaftar
+                    </h3>
+
+                    <p>
+                        Silakan tambah anggota baru untuk memulai
+                    </p>
+
+                    <a
+                        href="{{ route('user.add') }}"
+                        class="btn-add"
+                    >
+
+                        <i class="fas fa-plus"></i>
+
+                        Tambah Anggota Pertama
+
+                    </a>
+
+                </div>
+
             @endif
+
         </div>
+
     </div>
+
 </div>
 
+
+<!-- ==========================================
+     JAVASCRIPT
+=========================================== -->
+
 <script>
+
     function confirmDelete(username) {
-        return confirm(`Yakin ingin menghapus anggota "${username}"?\n\nData yang dihapus tidak dapat dikembalikan!`);
+
+        return confirm(
+            `Yakin ingin menghapus anggota "${username}"?\n\n` +
+            `Data yang dihapus tidak dapat dikembalikan!`
+        );
+
     }
+
 </script>
+
 @endsection

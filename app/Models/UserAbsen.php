@@ -12,7 +12,7 @@ class UserAbsen extends Model
     protected $table = 'data_absen';
 
     protected $fillable = [
-        'username',
+        'register',
         'location',
         'status',
         'time_absen'
@@ -24,6 +24,10 @@ class UserAbsen extends Model
 
     public function user()
     {
-        return $this->belongsTo(UserData::class, 'username', 'username');
+        return $this->belongsTo(
+            UserData::class,
+            'register',
+            'register'
+        );
     }
 }

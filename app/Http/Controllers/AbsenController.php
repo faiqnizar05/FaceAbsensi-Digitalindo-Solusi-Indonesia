@@ -14,106 +14,213 @@ class AbsenController extends Controller
         return view('index');
     }
 
+    /**
+     * Cek No Register
+     */
     public function checkUsername(Request $request)
     {
         try {
+
             $request->validate([
-                'username' => 'required|string',
-                'kelas' => 'required|string'
+                'register' => 'required|string',
             ]);
 
-            $user = UserData::where('username', $request->username)
-                            ->where('kelas', $request->kelas)
-                            ->first();
+            // Cari berdasarkan NO REGISTER
+            $user = UserData::where(
+                'register',
+                $request->register
+            )->first();
 
             if (!$user) {
-                $userExists = UserData::where('username', $request->username)->first();
-                
-                if ($userExists) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Username ditemukan, tetapi kelas tidak sesuai! Kelas yang terdaftar: ' . $userExists->kelas
-                    ], 404);
-                } else {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Username tidak ditemukan! Silakan registrasi di dashboard.'
-                    ], 404);
-                }
+
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No Register tidak ditemukan! Silakan registrasi di dashboard.'
+                ], 404);
+
             }
 
             return response()->json([
                 'status' => true,
-                'message' => 'Data valid! Username dan kelas sesuai.',
+                'message' => 'No Register ditemukan!',
                 'data' => [
-                    'username' => $user->username,
-                    'kelas' => $user->kelas,
+                    'register' => $user->register,
+                    'departement' => $user->departement ?? '',
+                    'nama' => $user->nama ?? '',
+                    'no_telepon' => $user->no_telepon ?? '',
+                    'tanggal_mulai' => $user->tanggal_mulai ?? '',
                     'image' => asset($user->image)
                 ]
             ]);
 
         } catch (\Exception $e) {
+
             return response()->json([
                 'status' => false,
                 'message' => 'Error: ' . $e->getMessage()
             ], 500);
+
         }
     }
 
+
+    /**
+     * Submit Absensi
+     */
     public function submitAbsen(Request $request)
     {
         try {
+
             $request->validate([
-                'username' => 'required|string',
+                'register' => 'required|string',
                 'latitude' => 'required|numeric',
                 'longitude' => 'required|numeric',
                 'status' => 'required|in:success,failed'
             ]);
 
-            // --- SETTING LOKASI JATIJAJAR ---
-            $lat_pusat = -6.425838; 
-            $long_pusat = 106.866504;
-            
-            // AGAR BISA MELEWATI NOTIF JARAK:
-            // Ubah angka 80 menjadi 100000 (100km) agar bisa absen dari rumah
-            $radius_maksimal = 100000; 
+            /*
+            |--------------------------------------------------------------------------
+            | CEK REGISTER
+            |--------------------------------------------------------------------------
+            */
 
-            // Hitung jarak (Haversine)
-            $earthRadius = 6371000;
-            $dLat = deg2rad($lat_pusat - $request->latitude);
-            $dLon = deg2rad($long_pusat - $request->longitude);
-            $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($request->latitude)) * cos(deg2rad($lat_pusat)) * sin($dLon/2) * sin($dLon/2);
-            $c = 2 * atan2(sqrt($a), sqrt(1-$a));
-            $jarak = $earthRadius * $c;
+            $user = UserData::where(
+                'register',
+                $request->register
+            )->first();
 
-            // Jika jarak masih melebihi radius yang sudah diperlebar
-            if ($jarak > $radius_maksimal) {
+            if (!$user) {
+
                 return response()->json([
                     'status' => false,
-                    'message' => "Lokasi Anda terlalu jauh! (" . round($jarak) . "m). Maksimal {$radius_maksimal} meter."
-                ], 403);
+                    'message' => 'No Register tidak ditemukan!'
+                ], 404);
+
             }
 
-            $location = "https://www.google.com/maps?q={$request->latitude},{$request->longitude}";
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOKASI
+            |--------------------------------------------------------------------------
+            */
+
+            $lat_pusat = -6.425838;
+            $long_pusat = 106.866504;
+
+            $radius_maksimal = 100000;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | HITUNG JARAK
+            |--------------------------------------------------------------------------
+            */
+
+            $earthRadius = 6371000;
+
+            $dLat = deg2rad(
+                $lat_pusat - $request->latitude
+            );
+
+            $dLon = deg2rad(
+                $long_pusat - $request->longitude
+            );
+
+            $a =
+                sin($dLat / 2) *
+                sin($dLat / 2)
+                +
+                cos(deg2rad($request->latitude)) *
+                cos(deg2rad($lat_pusat)) *
+                sin($dLon / 2) *
+                sin($dLon / 2);
+
+            $c = 2 * atan2(
+                sqrt($a),
+                sqrt(1 - $a)
+            );
+
+            $jarak = $earthRadius * $c;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CEK RADIUS
+            |--------------------------------------------------------------------------
+            */
+
+            if ($jarak > $radius_maksimal) {
+
+                return response()->json([
+                    'status' => false,
+                    'message' =>
+                        'Lokasi Anda terlalu jauh! (' .
+                        round($jarak) .
+                        'm). Maksimal ' .
+                        $radius_maksimal .
+                        ' meter.'
+                ], 403);
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | GOOGLE MAPS
+            |--------------------------------------------------------------------------
+            */
+
+            $location =
+                "https://www.google.com/maps?q=" .
+                $request->latitude .
+                "," .
+                $request->longitude;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SIMPAN ABSENSI
+            |--------------------------------------------------------------------------
+            */
 
             $absen = UserAbsen::create([
-                'username' => $request->username,
+
+                'register' => $request->register,
+
                 'location' => $location,
+
                 'status' => $request->status,
-                'time_absen' => Carbon::now()
+
+                'time_absen' => Carbon::now(),
+
             ]);
 
+
             return response()->json([
+
                 'status' => true,
-                'message' => $request->status === 'success' ? 'Absensi berhasil!' : 'Absensi gagal!',
+
+                'message' =>
+                    $request->status === 'success'
+                        ? 'Absensi berhasil!'
+                        : 'Absensi gagal!',
+
                 'data' => $absen
+
             ]);
+
 
         } catch (\Exception $e) {
+
             return response()->json([
+
                 'status' => false,
+
                 'message' => 'Error: ' . $e->getMessage()
+
             ], 500);
+
         }
     }
 }

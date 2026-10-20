@@ -2,510 +2,288 @@
 
 @section('title', 'Tambah Anggota - Absensi')
 
-@section('styles')
+@section('content')
+
 <style>
-    .page-container {
+    .form-container {
         max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .page-header {
-        background: rgba(30, 30, 30, 0.8);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(59, 130, 246, 0.3);
+        margin: 30px auto;
+        background: #ffffff;
+        padding: 30px;
         border-radius: 15px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px #1e1e1e;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.08);
     }
 
-    .page-header h1 {
-        color: #3B82F6;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
+    .form-title {
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: #1e3a8a;
     }
 
-    .page-header p {
-        color: #9CA3AF;
-        margin: 0;
-    }
-
-    .form-section {
-        background: rgba(30, 30, 30, 0.8);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 8px 32px #1e1e1e;
-    }
-
-    .alert {
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-        animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .alert-success {
-        background: rgba(34, 197, 94, 0.15);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-        color: #22C55E;
-    }
-
-    .alert-error {
-        background: rgba(239, 68, 68, 0.15);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #EF4444;
-    }
-
-    .alert i {
-        font-size: 1.2rem;
+    .form-subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
     }
 
     .form-group {
-        margin-bottom: 1.5rem;
+        margin-bottom: 20px;
     }
 
     .form-group label {
         display: block;
-        margin-bottom: 0.7rem;
-        color: #E5E7EB;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #334155;
     }
 
     .form-control {
         width: 100%;
-        padding: 0.9rem 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        border-radius: 10px;
-        color: #fff;
-        font-size: 1rem;
-        transition: all 0.3s;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 15px;
+        box-sizing: border-box;
     }
 
     .form-control:focus {
         outline: none;
-        border-color: #3B82F6;
-        background: rgba(255, 255, 255, 0.08);
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
-    .form-control::placeholder {
-        color: #6B7280;
-    }
-
-    .file-input-wrapper {
-        position: relative;
-        overflow: hidden;
-        display: inline-block;
+    .btn-submit {
         width: 100%;
-    }
-
-    .file-input-label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.7rem;
-        padding: 3rem;
-        background: rgba(59, 130, 246, 0.05);
-        border: 2px dashed rgba(59, 130, 246, 0.3);
-        border-radius: 10px;
+        padding: 13px;
+        border: none;
+        border-radius: 8px;
+        background: #2563eb;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s;
-        text-align: center;
     }
 
-    .file-input-label:hover {
-        background: rgba(59, 130, 246, 0.1);
-        border-color: #3B82F6;
+    .btn-submit:hover {
+        background: #1d4ed8;
     }
 
-    .file-input-label i {
-        font-size: 2.5rem;
-        color: #3B82F6;
+    .alert {
+        padding: 13px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
     }
 
-    .file-input-label span {
-        color: #D1D5DB;
-        font-size: 0.95rem;
+    .alert-success {
+        background: #dcfce7;
+        color: #166534;
     }
 
-    .file-input-wrapper input[type="file"] {
-        position: absolute;
-        left: -9999px;
+    .alert-danger {
+        background: #fee2e2;
+        color: #991b1b;
     }
 
-    .preview-container {
-        margin-top: 1rem;
+    .required {
+        color: #dc2626;
+    }
+
+    .preview {
+        margin-top: 10px;
         display: none;
     }
 
-    .preview-container.active {
-        display: block;
-    }
-
-    .image-preview {
-        width: 100%;
-        max-width: 300px;
-        height: 300px;
+    .preview img {
+        width: 120px;
+        height: 120px;
         object-fit: cover;
         border-radius: 10px;
-        border: 2px solid rgba(59, 130, 246, 0.3);
-        margin: 0 auto;
-        display: block;
-    }
-
-    .file-info {
-        margin-top: 0.7rem;
-        padding: 0.7rem;
-        background: rgba(59, 130, 246, 0.1);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .file-info-text {
-        color: #D1D5DB;
-        font-size: 0.9rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-remove {
-        background: rgba(239, 68, 68, 0.2);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #EF4444;
-        padding: 0.4rem 0.8rem;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.85rem;
-        transition: all 0.3s;
-    }
-
-    .btn-remove:hover {
-        background: rgba(239, 68, 68, 0.3);
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 2rem;
-    }
-
-    .btn {
-        padding: 0.9rem 1.8rem;
-        border: none;
-        border-radius: 10px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.7rem;
-        font-weight: 500;
-        justify-content: center;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, #3B82F6, #2563EB);
-        color: white;
-        flex: 1;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-    }
-
-    .btn-primary:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .btn-secondary {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #D1D5DB;
-    }
-
-    .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: #3B82F6;
-    }
-
-    .help-text {
-        color: #9CA3AF;
-        font-size: 0.85rem;
-        margin-top: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-
-    .help-text i {
-        font-size: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-        .page-header {
-            padding: 1.5rem;
-        }
-
-        .form-section {
-            padding: 1.5rem;
-        }
-
-        .form-actions {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
-        }
+        border: 2px solid #e2e8f0;
     }
 </style>
-@endsection
 
-@section('content')
-<div class="page-container">
-    <div class="page-header">
-        <h1><i class="fas fa-user-plus"></i> Tambah Anggota Baru</h1>
-        <p>Daftarkan anggota baru untuk sistem absensi face recognition</p>
+<div class="form-container">
+
+    <div class="form-title">
+        Tambah Anggota
     </div>
 
+    <div class="form-subtitle">
+        Silakan lengkapi data peserta untuk pendaftaran absensi.
+    </div>
+
+    {{-- SUCCESS --}}
     @if(session('success'))
-    <div class="alert alert-success">
-        <i class="fas fa-check-circle"></i>
-        <span>{{ session('success') }}</span>
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="alert alert-error">
-        <i class="fas fa-exclamation-circle"></i>
-        <span>{{ session('error') }}</span>
-    </div>
-    @endif
-
-    @if($errors->any())
-    <div class="alert alert-error">
-        <i class="fas fa-exclamation-circle"></i>
-        <div>
-            @foreach($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
-    </div>
     @endif
 
-    <div class="form-section">
-        <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data" id="addUserForm">
-            @csrf
-            
-            <div class="form-group">
-                <label for="username">
-                    <i class="fas fa-user"></i> Username
-                </label>
-                <input 
-                    type="text" 
-                    id="username" 
-                    name="username" 
-                    class="form-control" 
-                    placeholder="Masukkan username (minimal 3 karakter)"
-                    value="{{ old('username') }}"
-                    required
-                    minlength="3"
-                >
-                <div class="help-text">
-                    <i class="fas fa-info-circle"></i>
-                    Username harus unik dan minimal 3 karakter
-                </div>
-            </div>
+    {{-- ERROR --}}
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
 
-            <!-- FIELD KELAS BARU! -->
-            <div class="form-group">
-                <label for="kelas">
-                    <i class="fas fa-graduation-cap"></i> Kelas
-                </label>
-                <input 
-                    type="text" 
-                    id="kelas" 
-                    name="kelas" 
-                    class="form-control" 
-                    placeholder="Contoh: XII RPL 1, X TKJ 2, Kelas A"
-                    value="{{ old('kelas') }}"
-                    required
-                    minlength="2"
-                >
-                <div class="help-text">
-                    <i class="fas fa-info-circle"></i>
-                    Masukkan kelas anggota (minimal 2 karakter)
-                </div>
-            </div>
+    {{-- VALIDATION ERROR --}}
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul style="margin:0; padding-left:20px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            <div class="form-group">
-                <label>
-                    <i class="fas fa-image"></i> Upload Foto Wajah
-                </label>
-                <div class="file-input-wrapper">
-                    <label for="image" class="file-input-label" id="fileLabel">
-                        <div>
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <div>
-                                <span style="display: block; font-weight: 600; color: #3B82F6; margin-bottom: 0.3rem;">
-                                    Klik untuk upload foto
-                                </span>
-                                <span style="font-size: 0.85rem;">
-                                    Format: JPEG, JPG, PNG (Max: 2MB)
-                                </span>
-                            </div>
-                        </div>
-                    </label>
-                    <input 
-                        type="file" 
-                        id="image" 
-                        name="image" 
-                        accept="image/jpeg,image/png,image/jpg"
-                        required
-                    >
-                </div>
-                <div class="preview-container" id="previewContainer">
-                    <img src="" alt="Preview" class="image-preview" id="imagePreview">
-                    <div class="file-info">
-                        <span class="file-info-text">
-                            <i class="fas fa-file-image"></i>
-                            <span id="fileName"></span>
-                        </span>
-                        <button type="button" class="btn-remove" id="removeImage">
-                            <i class="fas fa-times"></i> Hapus
-                        </button>
-                    </div>
-                </div>
-                <div class="help-text">
-                    <i class="fas fa-info-circle"></i>
-                    Gunakan foto wajah yang jelas dan menghadap ke depan untuk akurasi terbaik
-                </div>
-            </div>
+    <form
+        action="{{ route('user.store') }}"
+        method="POST"
+        enctype="multipart/form-data"
+    >
 
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                    <i class="fas fa-redo"></i> Reset
-                </button>
-                <button type="submit" class="btn btn-primary" id="submitBtn">
-                    <i class="fas fa-save"></i> Simpan Data
-                </button>
+        @csrf
+
+        {{-- NO REGISTER --}}
+        <div class="form-group">
+            <label for="register">
+                No Register <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                name="register"
+                id="register"
+                class="form-control"
+                placeholder="Contoh: 1111"
+                value="{{ old('register') }}"
+                required
+            >
+        </div>
+
+        {{-- DEPARTEMENT --}}
+        <div class="form-group">
+            <label for="departement">
+                Departement <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                name="departement"
+                id="departement"
+                class="form-control"
+                placeholder="Contoh: Content Creator"
+                value="{{ old('departement') }}"
+                required
+            >
+        </div>
+
+        {{-- NAMA --}}
+        <div class="form-group">
+            <label for="nama">
+                Nama <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                name="nama"
+                id="nama"
+                class="form-control"
+                placeholder="Masukkan nama lengkap"
+                value="{{ old('nama') }}"
+                required
+            >
+        </div>
+
+        {{-- NO TELEPON --}}
+        <div class="form-group">
+            <label for="no_telepon">
+                No Telepon <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                name="no_telepon"
+                id="no_telepon"
+                class="form-control"
+                placeholder="Contoh: 081234567890"
+                value="{{ old('no_telepon') }}"
+                required
+            >
+        </div>
+
+        {{-- TANGGAL MULAI --}}
+        <div class="form-group">
+            <label for="tanggal_mulai">
+                Tanggal Mulai <span class="required">*</span>
+            </label>
+
+            <input
+                type="date"
+                name="tanggal_mulai"
+                id="tanggal_mulai"
+                class="form-control"
+                value="{{ old('tanggal_mulai') }}"
+                required
+            >
+        </div>
+
+        {{-- FOTO --}}
+        <div class="form-group">
+            <label for="image">
+                Foto <span class="required">*</span>
+            </label>
+
+            <input
+                type="file"
+                name="image"
+                id="image"
+                class="form-control"
+                accept="image/jpeg,image/jpg,image/png"
+                required
+            >
+
+            <small style="color:#64748b;">
+                Format JPG/JPEG/PNG, maksimal 2 MB.
+            </small>
+
+            <div class="preview" id="imagePreview">
+                <img id="previewImage" src="" alt="Preview">
             </div>
-        </form>
-    </div>
+        </div>
+
+        {{-- SUBMIT --}}
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-save"></i>
+            Simpan Data Anggota
+        </button>
+
+    </form>
+
 </div>
 
 <script>
-    const imageInput = document.getElementById('image');
-    const previewContainer = document.getElementById('previewContainer');
-    const imagePreview = document.getElementById('imagePreview');
-    const fileName = document.getElementById('fileName');
-    const removeBtn = document.getElementById('removeImage');
-    const fileLabel = document.getElementById('fileLabel');
-    const submitBtn = document.getElementById('submitBtn');
+document.getElementById('image').addEventListener('change', function(event) {
 
-    // Preview image
-    imageInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        
-        if (file) {
-            // Validate file size (2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                alert('Ukuran file terlalu besar! Maksimal 2MB');
-                imageInput.value = '';
-                return;
-            }
+    const file = event.target.files[0];
 
-            // Validate file type
-            if (!file.type.match('image/jpeg') && !file.type.match('image/jpg') && !file.type.match('image/png')) {
-                alert('Format file tidak didukung! Gunakan JPEG, JPG, atau PNG');
-                imageInput.value = '';
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-                fileName.textContent = file.name;
-                previewContainer.classList.add('active');
-                fileLabel.style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Remove image
-    removeBtn.addEventListener('click', function() {
-        imageInput.value = '';
-        imagePreview.src = '';
-        fileName.textContent = '';
-        previewContainer.classList.remove('active');
-        fileLabel.style.display = 'flex';
-    });
-
-    // Reset form
-    function resetForm() {
-        if (confirm('Yakin ingin mereset form?')) {
-            document.getElementById('addUserForm').reset();
-            imageInput.value = '';
-            imagePreview.src = '';
-            fileName.textContent = '';
-            previewContainer.classList.remove('active');
-            fileLabel.style.display = 'flex';
-        }
+    if (!file) {
+        document.getElementById('imagePreview').style.display = 'none';
+        return;
     }
 
-    // Form validation - UPDATE VALIDASI KELAS!
-    document.getElementById('addUserForm').addEventListener('submit', function(e) {
-        const username = document.getElementById('username').value.trim();
-        const kelas = document.getElementById('kelas').value.trim();
-        
-        if (username.length < 3) {
-            e.preventDefault();
-            alert('Username minimal 3 karakter!');
-            return;
-        }
+    const reader = new FileReader();
 
-        // VALIDASI KELAS BARU!
-        if (kelas.length < 2) {
-            e.preventDefault();
-            alert('Kelas minimal 2 karakter!');
-            return;
-        }
+    reader.onload = function(e) {
 
-        if (!imageInput.files[0]) {
-            e.preventDefault();
-            alert('Silakan upload foto wajah!');
-            return;
-        }
+        document.getElementById('previewImage').src = e.target.result;
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
-    });
+        document.getElementById('imagePreview').style.display = 'block';
+    };
+
+    reader.readAsDataURL(file);
+});
 </script>
+
 @endsection
